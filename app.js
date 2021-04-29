@@ -1,10 +1,11 @@
 function WhatsOnYourMind({ addTweet }) {
-  const handleChange = (event) => {
+  function handleChange(event) {
     if (event.key === "Enter" && event.target.value) {
       addTweet(event.target.value)
       event.target.value = ""
     }
   }
+
   return (
     <div className="whatsonyourmind">
       <input
@@ -52,8 +53,8 @@ function Tweet({ message, likes }) {
 function Timeline({ tweets }) {
   return (
     <ul className="timeline">
-      {tweets.map(({ message, likes }) => (
-        <li>
+      {tweets.map(({ id, message, likes }) => (
+        <li key={id}>
           <Tweet message={message} likes={likes} />
         </li>
       ))}
@@ -62,17 +63,12 @@ function Timeline({ tweets }) {
 }
 
 function App() {
-  const [tweets, setTweets] = React.useState([
-    { message: "hello world", likes: 10 },
-    { message: "Lorem ipsum dolor.", likes: 25 },
-  ])
+  const [tweets, setTweets] = React.useState([])
 
-  const addTweet = (message) => {
-    const newTweet = { message, likes: 0 }
-    const updatedTweets = []
-    updatedTweets.push(newTweet)
-    tweets.forEach((tweet) => updatedTweets.push(tweet))
-    setTweets(updatedTweets)
+  function addTweet(message) {
+    const latestTweetId = tweets.length > 0 ? tweets[0].id : 0
+    const newTweet = { id: latestTweetId + 1, message, likes: 0 }
+    setTweets([newTweet, ...tweets])
   }
 
   return (
